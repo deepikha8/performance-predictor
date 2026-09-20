@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - AI Student Performance Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            background: url('https://images.hdqwalls.com/download/ocean-blue-abstract-xt-3840x2160.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #004080;
+        }
+
+        h3 {
+            color: #004080;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #004080;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #99ccff;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #99ccff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #66b2ff;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #004080;
+        }
+
+        #suggestionButton {
+            display: none;
+            margin-top: 15px;
+            background: #004080;
+            color: white;
+        }
+
+        #suggestionButton:hover {
+            background: #0066b3;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Profile</h2>
+
+    <form id="profileForm">
+
+        <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="parentName">Parent's Name</label>
+            <input type="text" id="parentName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="parentMobile">Parent's Mobile Number</label>
+            <input type="tel" id="parentMobile" required>
+        </div>
+
+        <div class="form-group">
+            <label for="parentEmail">Parent's Email ID</label>
+            <input type="email" id="parentEmail" required>
+        </div>
+
+        <div class="form-group">
+            <label for="institution">Institution Type</label>
+            <select id="institution" required>
+                <option value="">-- Select --</option>
+                <option value="School">School</option>
+                <option value="College">College</option>
+            </select>
+        </div>
+
+        <div id="schoolSection" style="display:none;">
+
+            <div class="form-group">
+                <label for="standard">Standard</label>
+                <select id="standard">
+                    <option value="">-- Select Standard --</option>
+                    <option value="I-V">I – V</option>
+                    <option value="VI-X">VI – X</option>
+                    <option value="XI-XII">XI – XII</option>
+                </select>
+            </div>
+
+            <div id="marksIV" style="display:none;">
+
+                <h3>Enter Marks (0–100)</h3>
+
+                <div class="form-group">
+                    <label>Tamil</label>
+                    <input type="number" id="tamil" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>English</label>
+                    <input type="number" id="english" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Maths</label>
+                    <input type="number" id="maths" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>EVS</label>
+                    <input type="number" id="evs" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>CE</label>
+                    <input type="number" id="ce" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>GK</label>
+                    <input type="number" id="gk" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Hindi</label>
+                    <input type="number" id="hindi" min="0" max="100">
+                </div>
+
+            </div>
+
+            <div id="marksVIX" style="display:none;">
+
+                <h3>Enter Marks (0–100)</h3>
+
+                <div class="form-group">
+                    <label>Tamil</label>
+                    <input type="number" id="tamil2" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>English</label>
+                    <input type="number" id="english2" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Maths</label>
+                    <input type="number" id="maths2" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Science</label>
+                    <input type="number" id="science" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Social</label>
+                    <input type="number" id="social" min="0" max="100">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="collegeSection" style="display:none;">
+
+            <h3>College Details</h3>
+
+            <div class="form-group">
+                <label for="cgpa">CGPA</label>
+                <input type="number" id="cgpa" min="0" max="10" step="0.01" placeholder="Enter CGPA (0 - 10)">
+            </div>
+
+            <div class="form-group">
+                <label for="attendance">Attendance Percentage</label>
+                <input type="number" id="attendance" min="0" max="100" step="0.01" placeholder="Enter Attendance %">
+            </div>
+
+            <div class="form-group">
+                <label for="studyHours">Study Hours Per Day</label>
+                <input type="number" id="studyHours" min="0" max="24" step="0.5" placeholder="Enter Study Hours">
+            </div>
+
+        </div>
+
+        <button type="submit">Submit</button>
+
+    </form>
+
+    <div id="result"></div>
+
+    <button id="suggestionButton" onclick="goToTarget()">
+        View Suggestions
+    </button>
+
+</div>
+
+<script>
+
+document.getElementById("name").value =
+    localStorage.getItem("userName") || "";
+
+document.getElementById("email").value =
+    localStorage.getItem("userEmail") || "";
+
+document.getElementById("parentName").value =
+    localStorage.getItem("parentName") || "";
+
+document.getElementById("parentMobile").value =
+    localStorage.getItem("parentMobile") || "";
+
+document.getElementById("parentEmail").value =
+    localStorage.getItem("parentEmail") || "";
+
+let currentPerformance = "";
+
+document.getElementById("institution").addEventListener("change", function() {
+
+    let institution = this.value;
+
+    let schoolSection = document.getElementById("schoolSection");
+    let collegeSection = document.getElementById("collegeSection");
+    let standard = document.getElementById("standard");
+
+    if (institution === "School") {
+
+        schoolSection.style.display = "block";
+        collegeSection.style.display = "none";
+        standard.required = true;
+
+    } else if (institution === "College") {
+
+        schoolSection.style.display = "none";
+        collegeSection.style.display = "block";
+        standard.required = false;
+
+        document.getElementById("marksIV").style.display = "none";
+        document.getElementById("marksVIX").style.display = "none";
+
+    } else {
+
+        schoolSection.style.display = "none";
+        collegeSection.style.display = "none";
+        standard.required = false;
+
+    }
+
+});
+
+document.getElementById("standard").addEventListener("change", function() {
+
+    let standard = this.value;
+
+    if (standard === "I-V") {
+
+        document.getElementById("marksIV").style.display = "block";
+        document.getElementById("marksVIX").style.display = "none";
+
+    } else if (standard === "VI-X") {
+
+        document.getElementById("marksIV").style.display = "none";
+        document.getElementById("marksVIX").style.display = "block";
+
+    } else {
+
+        document.getElementById("marksIV").style.display = "none";
+        document.getElementById("marksVIX").style.display = "none";
+
+    }
+
+});
+
+document.getElementById("profileForm").addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    localStorage.setItem(
+        "parentName",
+        document.getElementById("parentName").value
+    );
+
+    localStorage.setItem(
+        "parentMobile",
+        document.getElementById("parentMobile").value
+    );
+
+    localStorage.setItem(
+        "parentEmail",
+        document.getElementById("parentEmail").value
+    );
+
+    let institution =
+        document.getElementById("institution").value;
+
+    if (institution === "College") {
+
+        let cgpa =
+            parseFloat(document.getElementById("cgpa").value);
+
+        let attendance =
+            parseFloat(document.getElementById("attendance").value);
+
+        let studyHours =
+            parseFloat(document.getElementById("studyHours").value);
+
+        if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+            alert("CGPA must be between 0 and 10");
+            return;
+        }
+
+        if (isNaN(attendance) || attendance < 0 || attendance > 100) {
+            alert("Attendance must be between 0 and 100%");
+            return;
+        }
+
+        if (isNaN(studyHours) || studyHours < 0 || studyHours > 24) {
+            alert("Study hours must be between 0 and 24");
+            return;
+        }
+
+        let cgpaScore = (cgpa / 10) * 100;
+        let attendanceScore = attendance;
+        let studyScore = Math.min((studyHours / 12) * 100, 100);
+
+        let average =
+            (cgpaScore + attendanceScore + studyScore) / 3;
+
+        average = Math.min(average, 100);
+
+        let performance = "Low";
+
+        if (average >= 75) {
+            performance = "High";
+        } else if (average >= 50) {
+            performance = "Medium";
+        }
+
+        showResult(average, performance);
+        return;
+    }
+
+    if (institution !== "School") {
+        alert("Please select School or College.");
+        return;
+    }
+
+    let standard =
+        document.getElementById("standard").value;
+
+    let total = 0;
+    let count = 0;
+
+    if (standard === "I-V") {
+
+        let subjects = [
+            "tamil",
+            "english",
+            "maths",
+            "evs",
+            "ce",
+            "gk",
+            "hindi"
+        ];
+
+        for (let sub of subjects) {
+
+            let val =
+                parseInt(document.getElementById(sub).value);
+
+            if (isNaN(val) || val < 0 || val > 100) {
+
+                alert(
+                    "Marks for " + sub +
+                    " must be between 0 and 100"
+                );
+
+                return;
+            }
+
+            total += val;
+            count++;
+        }
+
+    } else if (standard === "VI-X") {
+
+        let subjects = [
+            "tamil2",
+            "english2",
+            "maths2",
+            "science",
+            "social"
+        ];
+
+        for (let sub of subjects) {
+
+            let val =
+                parseInt(document.getElementById(sub).value);
+
+            if (isNaN(val) || val < 0 || val > 100) {
+
+                alert(
+                    "Marks for " + sub +
+                    " must be between 0 and 100"
+                );
+
+                return;
+            }
+
+            total += val;
+            count++;
+        }
+
+    } else {
+
+        alert("Please select a valid standard.");
+        return;
+    }
+
+    let average = total / count;
+
+    average = Math.min(average, 100);
+
+    let performance = "Low";
+
+    if (average >= 75) {
+        performance = "High";
+    } else if (average >= 50) {
+        performance = "Medium";
+    }
+
+    showResult(average, performance);
+
+});
+
+function showResult(average, performance) {
+
+    currentPerformance = performance;
+
+    localStorage.setItem("performanceLevel", performance);
+    localStorage.setItem("averageScore", average.toFixed(2));
+
+    document.getElementById("result").innerHTML =
+        "Average Score: " +
+        average.toFixed(2) +
+        "<br>Performance Level: " +
+        performance;
+
+    document.getElementById("suggestionButton").style.display = "block";
+}
+
+function goToTarget() {
+
+    localStorage.setItem("performanceLevel", currentPerformance);
+
+    window.location.href = "target.html";
+}
+
+</script>
+
+</body>
+</html>

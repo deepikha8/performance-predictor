@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Targets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        body {
+            background: url('https://images.hdqwalls.com/download/ocean-blue-abstract-xt-3840x2160.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: rgba(255,255,255,0.96);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #004080;
+        }
+
+        .welcome {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .day-box {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 5px;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: #eee;
+        }
+
+        .task {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #f5faff;
+            border-left: 4px solid #66b2ff;
+            transition: 0.3s;
+        }
+
+        .task label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #004080;
+            cursor: pointer;
+        }
+
+        .task input {
+            width: 19px;
+            height: 19px;
+            cursor: pointer;
+        }
+
+        .task-time {
+            font-size: 12px;
+            color: #777;
+            margin-top: 7px;
+            margin-left: 29px;
+        }
+
+        .completed {
+            background: #e8f8ee;
+            border-left: 4px solid green;
+        }
+
+        .completed label {
+            color: green;
+        }
+
+        .expired {
+            background: #ffe8e8;
+            border-left: 4px solid red;
+        }
+
+        .expired label {
+            color: red;
+        }
+
+        .locked {
+            background: #eeeeee;
+            border-left: 4px solid #999;
+        }
+
+        .locked label {
+            color: #777;
+        }
+
+        .progress-title {
+            margin-top: 25px;
+            font-weight: bold;
+            color: #004080;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 25px;
+            background: #dcecff;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #66b2ff;
+            transition: width 0.3s;
+        }
+
+        #progressText {
+            text-align: center;
+            font-weight: bold;
+            color: #004080;
+            margin-top: 8px;
+        }
+
+        .complete {
+            text-align: center;
+            color: green;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .parent-alert {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #ffe8e8;
+            border: 1px solid #ff7777;
+            color: red;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .back-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #004080;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            background: #0066b3;
+        }
+
+        .expired-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 6px;
+            margin-left: 29px;
+            font-weight: bold;
+        }
+
+        .available-message {
+            color: green;
+            font-size: 12px;
+            margin-top: 6px;
+            margin-left: 29px;
+        }
+
+        .locked-message {
+            color: #777;
+            font-size: 12px;
+            margin-top: 6px;
+            margin-left: 29px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🎯 My Weekly Targets</h2>
+
+    <div class="welcome">
+        <div id="studentName"></div>
+        <div id="performance"></div>
+    </div>
+
+    <div id="weeklyTargets"></div>
+
+    <div class="progress-title">
+        Target Progress
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div id="progressText">
+        0% Completed
+    </div>
+
+    <div class="complete" id="completeMessage">
+        🎉 All targets completed!
+    </div>
+
+    <div class="parent-alert" id="parentAlert">
+        ⚠ Target progress is below 40%.
+        Parent notification will be sent.
+    </div>
+
+    <button class="back-button" onclick="goBack()">
+        Back to Profile
+    </button>
+
+</div>
+
+<script>
+
+let performance =
+    localStorage.getItem("performanceLevel") || "Low";
+
+let studentName =
+    localStorage.getItem("userName") || "Student";
+
+let parentEmail =
+    localStorage.getItem("parentEmail") || "";
+
+document.getElementById("studentName").innerHTML =
+    "Hello, " + studentName + "!";
+
+document.getElementById("performance").innerHTML =
+    "Performance Level: " + performance;
+
+let targetList = [];
+
+if (performance === "High") {
+
+    targetList = [
+        "Revise important topics",
+        "Study for 2 hours",
+        "Complete all assignments",
+        "Practice additional questions",
+        "Revise difficult subjects",
+        "Take a self-test"
+    ];
+
+} else if (performance === "Medium") {
+
+    targetList = [
+        "Revise difficult topics",
+        "Study for 2 hours",
+        "Complete all assignments",
+        "Practice extra questions",
+        "Revise important lessons",
+        "Take a self-test"
+    ];
+
+} else {
+
+    targetList = [
+        "Revise today's lesson",
+        "Study for 1 hour",
+        "Complete daily homework",
+        "Practice important questions",
+        "Revise difficult topics",
+        "Ask teacher about doubts"
+    ];
+
+}
+
+let days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday"
+];
+
+let savedTasks =
+    JSON.parse(localStorage.getItem("dailyTargetTasks")) || {};
+
+let container =
+    document.getElementById("weeklyTargets");
+
+function getToday() {
+    return new Date().getDay();
+}
+
+function getCurrentHour() {
+    return new Date().getHours();
+}
+
+function getCurrentMinute() {
+    return new Date().getMinutes();
+}
+
+function getStartHour(dayIndex) {
+
+    if (dayIndex === 0) {
+        return 6;
+    }
+
+    return 9;
+}
+
+function isTimeAvailable(dayIndex) {
+
+    let now = new Date();
+
+    let currentMinutes =
+        now.getHours() * 60 + now.getMinutes();
+
+    let startMinutes =
+        getStartHour(dayIndex) * 60;
+
+    let endMinutes =
+        22 * 60;
+
+    return currentMinutes >= startMinutes &&
+           currentMinutes < endMinutes;
+}
+
+function isExpired(dayIndex) {
+
+    let today = getToday();
+    let currentMinutes =
+        getCurrentHour() * 60 + getCurrentMinute();
+
+    let endMinutes = 22 * 60;
+
+    if (dayIndex < today) {
+        return true;
+    }
+
+    if (dayIndex === today && currentMinutes >= endMinutes) {
+        return true;
+    }
+
+    return false;
+}
+
+function isFuture(dayIndex) {
+
+    let today = getToday();
+
+    return dayIndex > today;
+}
+
+function createTargets() {
+
+    container.innerHTML = "";
+
+    days.forEach(function(day, index) {
+
+        let dayBox = document.createElement("div");
+        dayBox.className = "day-box";
+
+        let header = document.createElement("div");
+        header.className = "day-header";
+
+        let dayName = document.createElement("div");
+        dayName.className = "day-name";
+        dayName.innerHTML = day;
+
+        let status = document.createElement("div");
+        status.className = "status";
+
+        let task = document.createElement("div");
+        task.className = "task";
+
+        let label = document.createElement("label");
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+
+        let taskText = document.createElement("span");
+        taskText.innerHTML = targetList[index];
+
+        let timeText = document.createElement("div");
+        timeText.className = "task-time";
+
+        if (index === 0) {
+            timeText.innerHTML =
+                "Available: 6:00 AM - 10:00 PM";
+        } else {
+            timeText.innerHTML =
+                "Available: 9:00 AM - 10:00 PM";
+        }
+
+        let message = document.createElement("div");
+
+        let key =
+            performance + "_" + day;
+
+        if (savedTasks[key]) {
+            checkbox.checked = true;
+        }
+
+        if (checkbox.checked) {
+
+            task.classList.add("completed");
+
+            status.innerHTML = "Completed";
+            status.style.color = "green";
+
+        } else if (isExpired(index)) {
+
+            task.classList.add("expired");
+
+            checkbox.disabled = true;
+
+            status.innerHTML = "Expired";
+            status.style.color = "red";
+
+            message.className = "expired-message";
+            message.innerHTML =
+                "Task not completed before 10:00 PM";
+
+        } else if (isFuture(index)) {
+
+            task.classList.add("locked");
+
+            checkbox.disabled = true;
+
+            status.innerHTML = "Upcoming";
+            status.style.color = "#777";
+
+            message.className = "locked-message";
+
+            if (index === 0) {
+                message.innerHTML =
+                    "Available on Sunday from 6:00 AM";
+            } else {
+                message.innerHTML =
+                    "Available on " + day + " from 9:00 AM";
+            }
+
+        } else if (!isTimeAvailable(index)) {
+
+            task.classList.add("locked");
+
+            checkbox.disabled = true;
+
+            status.innerHTML = "Locked";
+            status.style.color = "#777";
+
+            message.className = "locked-message";
+
+            if (getCurrentHour() < getStartHour(index)) {
+
+                if (index === 0) {
+                    message.innerHTML =
+                        "Available from 6:00 AM";
+                } else {
+                    message.innerHTML =
+                        "Available from 9:00 AM";
+                }
+
+            }
+
+        } else {
+
+            status.innerHTML = "Available";
+            status.style.color = "green";
+
+            message.className = "available-message";
+            message.innerHTML =
+                "Complete this task before 10:00 PM";
+
+        }
+
+        checkbox.addEventListener("change", function() {
+
+            if (!isTimeAvailable(index)) {
+                checkbox.checked = false;
+                return;
+            }
+
+            if (isExpired(index)) {
+                checkbox.checked = false;
+                return;
+            }
+
+            savedTasks[key] =
+                checkbox.checked;
+
+            localStorage.setItem(
+                "dailyTargetTasks",
+                JSON.stringify(savedTasks)
+            );
+
+            if (checkbox.checked) {
+
+                task.classList.remove("expired");
+                task.classList.remove("locked");
+                task.classList.add("completed");
+
+                status.innerHTML = "Completed";
+                status.style.color = "green";
+
+            } else {
+
+                task.classList.remove("completed");
+
+                status.innerHTML = "Available";
+                status.style.color = "green";
+            }
+
+            updateProgress();
+
+        });
+
+        label.appendChild(checkbox);
+        label.appendChild(taskText);
+
+        task.appendChild(label);
+        task.appendChild(timeText);
+
+        if (message.innerHTML !== "") {
+            task.appendChild(message);
+        }
+
+        header.appendChild(dayName);
+        header.appendChild(status);
+
+        dayBox.appendChild(header);
+        dayBox.appendChild(task);
+
+        container.appendChild(dayBox);
+
+    });
+
+    updateProgress();
+}
+
+function updateProgress() {
+
+    let completed = 0;
+
+    days.forEach(function(day) {
+
+        let key =
+            performance + "_" + day;
+
+        if (savedTasks[key]) {
+            completed++;
+        }
+
+    });
+
+    let total = days.length;
+
+    let percentage =
+        Math.round((completed / total) * 100);
+
+    document.getElementById("progressBar").style.width =
+        percentage + "%";
+
+    document.getElementById("progressText").innerHTML =
+        percentage + "% Completed (" +
+        completed + "/" +
+        total +
+        ")";
+
+    if (percentage === 100) {
+
+        document.getElementById("completeMessage").style.display =
+            "block";
+
+    } else {
+
+        document.getElementById("completeMessage").style.display =
+            "none";
+    }
+
+    if (percentage < 40) {
+
+        document.getElementById("parentAlert").style.display =
+            "block";
+
+        checkParentAlert(percentage);
+
+    } else {
+
+        document.getElementById("parentAlert").style.display =
+            "none";
+    }
+}
+
+function checkParentAlert(percentage) {
+
+    if (parentEmail === "") {
+        return;
+    }
+
+    let today = getToday();
+
+    let todayKey =
+        performance + "_" + days[today];
+
+    let todayCompleted =
+        savedTasks[todayKey] || false;
+
+    let todayExpired =
+        isExpired(today);
+
+    if (todayExpired && !todayCompleted) {
+
+        let alertKey =
+            "parentAlert_" +
+            performance +
+            "_" +
+            new Date().toISOString().split("T")[0];
+
+        let alreadySent =
+            localStorage.getItem(alertKey);
+
+        if (!alreadySent) {
+
+            sendParentEmail(percentage, today);
+
+            localStorage.setItem(
+                alertKey,
+                "true"
+            );
+        }
+    }
+}
+
+function sendParentEmail(percentage, today) {
+
+    let serviceID = "YOUR_SERVICE_ID";
+    let templateID = "YOUR_TEMPLATE_ID";
+    let publicKey = "YOUR_PUBLIC_KEY";
+
+    if (
+        serviceID === "YOUR_SERVICE_ID" ||
+        templateID === "YOUR_TEMPLATE_ID" ||
+        publicKey === "YOUR_PUBLIC_KEY"
+    ) {
+        return;
+    }
+
+    emailjs.init({
+        publicKey: publicKey
+    });
+
+    let templateParams = {
+        to_email: parentEmail,
+        student_name: studentName,
+        performance_level: performance,
+        progress_percentage: percentage,
+        missed_day: days[today]
+    };
+
+    emailjs.send(
+        serviceID,
+        templateID,
+        templateParams
+    ).then(function() {
+
+        console.log("Parent email sent successfully");
+
+    }).catch(function(error) {
+
+        console.log("Email sending failed");
+        console.log(error);
+
+    });
+}
+
+function goBack() {
+    window.location.href =
+        "performance_profile.html";
+}
+
+createTargets();
+
+setInterval(function() {
+
+    createTargets();
+
+}, 60000);
+
+</script>
+
+</body>
+</html>

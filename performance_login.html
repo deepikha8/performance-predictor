@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - AI Student Performance Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobile scaling -->
+    <style>
+        body {
+            background: url('https://images.hdqwalls.com/download/ocean-blue-abstract-xt-3840x2160.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Login box */
+        .container {
+            width: 100%;
+            max-width: 380px;
+            padding: 25px;
+            background: rgba(255,255,255,0.92);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            animation: fadeIn 1.2s ease-in-out;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #004080;
+            animation: slideDown 1s ease;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #004080;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #99ccff;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+        input:focus {
+            border-color: #004080;
+            box-shadow: 0 0 8px #99ccff;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #99ccff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #66b2ff;
+            transform: scale(1.05);
+        }
+        p {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        a {
+            text-decoration: none;
+            color: #004080;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        a:hover {
+            color: #66b2ff;
+        }
+        /* Animations */
+        @keyframes fadeIn {
+            from {opacity: 0; transform: scale(0.9);}
+            to {opacity: 1; transform: scale(1);}
+        }
+        @keyframes slideDown {
+            from {transform: translateY(-30px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+                border-radius: 10px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            input, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login box -->
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="performance_register.html">Register</a></p>
+    </div>
+
+    <script>
+        // Save login details in localStorage
+        document.getElementById("loginForm").addEventListener("submit", function(event){
+            event.preventDefault();
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            let savedEmail = localStorage.getItem("userEmail");
+            let savedPassword = localStorage.getItem("userPassword");
+
+            if(savedEmail && savedPassword){
+                if(email === savedEmail && password === savedPassword){
+                    alert("Login Successful! Welcome " + email);
+                    window.location.href = "performance_profile.html"; // redirect to home after login
+                } else {
+                    alert("Invalid Email or Password!");
+                }
+            } else {
+                alert("No account found. Please Register first.");
+                window.location.href = "performance_register.html";
+            }
+        });
+    </script>
+</body>
+</html>
